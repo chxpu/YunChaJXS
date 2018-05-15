@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import {App, IonicPage} from 'ionic-angular';
+import {AlertController, App, IonicPage} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {JSEncrypt} from "jsencrypt"
+import hex64 from 'hex64'
 import {HomePage} from "../home/home";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
 
@@ -14,28 +15,43 @@ import {UserInfoProvider} from "../../providers/user-info/user-info";
 export class LoginPage {
   private username: string = '';
   private password: string = '';
+  private cipherText: string = '';
   private eyeShow: boolean = false;
   private isRemember: boolean = false;
 
   constructor(public http: HttpClient,
               private app: App,
-              private userInfo:UserInfoProvider) {
+              private userInfo:UserInfoProvider,
+              public alertCtrl: AlertController) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
     this.username ='dlz-A';
-    this.password = '123456';
+    this.password = '';
     this.eyeShow = false;
     this.isRemember = false;
   }
 
+  /**
+   * 封装alert
+   * @param {string} titleParam
+   * @param {string} subTitleParam
+   */
+  showAlert(titleParam: string, subTitleParam: string) {
+    let alert = this.alertCtrl.create({
+      title: titleParam,
+      subTitle: subTitleParam,
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
   logIn() {
     if(this.username.length == 0) {
-      alert("请输入账号");
+      this.showAlert('提示', '请输入账号！');
     }
     else if(this.password.length == 0) {
-      alert("请输入密码");
+      this.showAlert('提示', '请输入密码！');
     }
     else {
       // 公钥加密
@@ -48,15 +64,14 @@ export class LoginPage {
         '-----END PUBLIC KEY-----\n');
       // encrypt编码为base64，需转为Hexadecimal传入后台接口
       let encrypted = encrypt.encrypt(this.password);
-      console.log('加密后数据:', encrypted);
-      console.log('加密后数据（16进制）:');
-      // console.log('公钥:', encrypt.getPublicKey());
+      // console.log('加密后数据:', encrypted);
+      // console.log('加密后数据（16进制）:' + hex64.toHex(encrypted));
+      this.cipherText = hex64.toHex(encrypted);
 
       if(this.isRemember) {
-        // 记住密码
+        // 记住密码 写入本地
       }
 
-      this.app.getRootNav().setRoot(HomePage);
       const posturl = 'https://qr.micsoto.com/api/getsecuretoken';
       const httpOptions = {
         headers: new HttpHeaders({
@@ -65,10 +80,7 @@ export class LoginPage {
       };
       let postBody = new URLSearchParams();
       postBody.set('username', this.username);
-      postBody.set('password', '2CAB87BF69A7491EB8D433371EFB47C2189FD17C4300E0B8F579EB4' +
-        'D2126111DBC5085C9D35F51FEA739912913BE48858410BE6EDAA95F3A64AEA1FC3CDE31E024EAE' +
-        '95958EC96397A7BFB9DBA3DB5397A0DD80DE3A565A74770F81E332F18301B58812853889FCB797' +
-        'DD7B61BCFD259F073D26967C1D9A319B5C6C6391D14F9');
+      postBody.set('password', this.cipherText);
       postBody.set('grant_type', 'password');
       postBody.set('client_id', '2');
       postBody.set('client_secret', '1');
@@ -76,15 +88,13 @@ export class LoginPage {
         .subscribe(data => {
             // 更新userToken
             this.userInfo.setUserToken(data.token_type + ' ' + data.access_token);
+            this.app.getRootNav().setRoot(HomePage);
           },
           error1 => {
-            console.log('错误：' + error1);
+            this.showAlert('登录失败', '用户名或密码错误，请重试！');
           }
         );
-
-
     }
-
   }
 
 }
