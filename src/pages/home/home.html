@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <button ion-button (click)="addProduct()" color="secondary" full icon-left>
+    <ion-icon name="md-add"></ion-icon>
+    入库
+  </button>
+  <button ion-button (click)="removeProduct()" color="danger" full icon-left>
+    <ion-icon name="md-close"></ion-icon>
+    出库
+  </button>
+  <button ion-button (click)="showProduct()" full icon-left>
+    <ion-icon name="md-clipboard"></ion-icon>
+    查看库存
+  </button>
+
+</ion-content>
