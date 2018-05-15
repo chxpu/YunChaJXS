@@ -53,7 +53,7 @@ export class ScanPage {
             // 发送get
             const httpGetOptions = {
               headers: new HttpHeaders({
-                'Authorization': this.token.toString()
+                'Authorization': this.token
               }),
               params: new HttpParams().append('QRCode', text)
             };

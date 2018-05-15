@@ -9,11 +9,10 @@ import { HomePage } from '../pages/home/home';
 import {LoginPage} from "../pages/login/login";
 import {ScanPage} from "../pages/scan/scan";
 import {QRScanner} from "@ionic-native/qr-scanner";
-import {AddProductPage} from "../pages/add-product/add-product";
-import {RemoveProductPage} from "../pages/remove-product/remove-product";
 import {InformationPage} from "../pages/information/information";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import { UserInfoProvider } from '../providers/user-info/user-info';
+import {StockPage} from "../pages/stock/stock";
 
 @NgModule({
   declarations: [
@@ -22,8 +21,7 @@ import { UserInfoProvider } from '../providers/user-info/user-info';
     LoginPage,
     ScanPage,
     InformationPage,
-    AddProductPage,
-    RemoveProductPage,
+    StockPage
   ],
   imports: [
     BrowserModule,
@@ -37,8 +35,7 @@ import { UserInfoProvider } from '../providers/user-info/user-info';
     LoginPage,
     ScanPage,
     InformationPage,
-    AddProductPage,
-    RemoveProductPage,
+    StockPage
   ],
   providers: [
     StatusBar,

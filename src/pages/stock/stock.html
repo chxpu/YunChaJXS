@@ -1,10 +1,14 @@
-
+<ion-header>
+  <ion-navbar>
+    <ion-title>查看库存</ion-title>
+  </ion-navbar>
+</ion-header>
 
 <ion-content padding>
   <ion-title >库存剩余</ion-title>
   <ion-list inset no-lines class="content-list">
     <ion-item *ngFor="let item of items" class="content-list-item">
-      {{item.title}}:余额{{sur}}
+      {{item.title}}: {{item.sur}} 份
     </ion-item>
   </ion-list>
 </ion-content>
