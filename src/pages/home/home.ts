@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import {NavController, Platform} from 'ionic-angular';
 import {ScanPage} from "../scan/scan";
 import {StockPage} from "../stock/stock";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {BackButtonService} from "../../providers/back-button/backButton.service";
 
 
 @Component({
@@ -16,7 +17,12 @@ export class HomePage {
 
   constructor(public navCtrl: NavController,
               private userInfo:UserInfoProvider,
-              public http: HttpClient,) {
+              public http: HttpClient,
+              private backButtonService: BackButtonService,
+              private platform: Platform) {
+    this.platform.ready().then(() => {
+      this.backButtonService.registerBackButtonAction(null);
+    });
     this.getRuleAndName();
   }
 

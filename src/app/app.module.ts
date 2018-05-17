@@ -14,6 +14,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
 import { UserInfoProvider } from '../providers/user-info/user-info';
 import {StockPage} from "../pages/stock/stock";
 import {IonicStorageModule} from "@ionic/storage";
+import {BackButtonService} from "../providers/back-button/backButton.service";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import {IonicStorageModule} from "@ionic/storage";
     QRScanner,
     HttpClient,
     UserInfoProvider,
-    Storage
+    Storage,
+    BackButtonService
   ]
 })
 export class AppModule {}

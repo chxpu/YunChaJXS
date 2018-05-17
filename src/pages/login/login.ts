@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import {AlertController, App, IonicPage, LoadingController} from 'ionic-angular';
+import {AlertController, App, IonicPage, LoadingController, Platform} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {JSEncrypt} from "jsencrypt"
 import hex64 from 'hex64'
 import {HomePage} from "../home/home";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
 import { Storage } from '@ionic/storage'
+import {BackButtonService} from "../../providers/back-button/backButton.service";
 
 
 @IonicPage()
@@ -26,7 +27,14 @@ export class LoginPage {
               private userInfo:UserInfoProvider,
               private alertCtrl: AlertController,
               private storage: Storage,
-              private loadingCtrl: LoadingController) {
+              private loadingCtrl: LoadingController,
+              private backButtonService: BackButtonService,
+              private platform: Platform) {
+    // 注册返回键服务
+    this.platform.ready().then(() => {
+      this.backButtonService.registerBackButtonAction(null);
+    });
+    // 获取本地存储的记住用户名密码
     this.storage.get('username').then((val) => {
       this.username = val;
     });
