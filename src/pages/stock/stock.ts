@@ -35,7 +35,7 @@ export class StockPage {
     this.http.get<any>('https://qr.micsoto.com/api/Dealer/DealerStock', getProductHttpOptions)
       .subscribe(data => {
           this.items = data.stock;
-          alert('数组长度:'+ this.items.length);
+          alert('库存数目：'+ this.items.length);
         },
         error1 => {
           alert('错误：' + error1)

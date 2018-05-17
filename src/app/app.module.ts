@@ -13,6 +13,7 @@ import {InformationPage} from "../pages/information/information";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import { UserInfoProvider } from '../providers/user-info/user-info';
 import {StockPage} from "../pages/stock/stock";
+import {IonicStorageModule} from "@ionic/storage";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {StockPage} from "../pages/stock/stock";
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    HttpClientModule
+    HttpClientModule,
+    IonicStorageModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -44,6 +46,7 @@ import {StockPage} from "../pages/stock/stock";
     QRScanner,
     HttpClient,
     UserInfoProvider,
+    Storage
   ]
 })
 export class AppModule {}

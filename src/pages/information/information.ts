@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Keyboard, LoadingController, NavController, NavParams} from 'ionic-angular';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
 import "rxjs/add/operator/map";
 

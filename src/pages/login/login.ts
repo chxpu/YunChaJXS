@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import {AlertController, App, IonicPage} from 'ionic-angular';
+import {AlertController, App, IonicPage, LoadingController} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {JSEncrypt} from "jsencrypt"
 import hex64 from 'hex64'
 import {HomePage} from "../home/home";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
+import { Storage } from '@ionic/storage'
+
 
 @IonicPage()
 @Component({
@@ -16,20 +18,27 @@ export class LoginPage {
   private username: string = '';
   private password: string = '';
   private cipherText: string = '';
-  private eyeShow: boolean = false;
-  private isRemember: boolean = false;
+  private eyeShow: boolean;
+  private isRemember: boolean;
 
-  constructor(public http: HttpClient,
+  constructor(private http: HttpClient,
               private app: App,
               private userInfo:UserInfoProvider,
-              public alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private storage: Storage,
+              private loadingCtrl: LoadingController) {
+    this.storage.get('username').then((val) => {
+      this.username = val;
+    });
+    this.storage.get('password').then((val) => {
+      this.password = val;
+    });
+    this.eyeShow = false;
+    this.isRemember = true;
   }
 
   ionViewDidLoad() {
-    this.username ='dlz-A';
-    this.password = '123456';
-    this.eyeShow = false;
-    this.isRemember = false;
+
   }
 
   /**
@@ -47,6 +56,12 @@ export class LoginPage {
   }
 
   logIn() {
+    // 登录动画
+    let loading = this.loadingCtrl.create({
+      spinner: 'dots',
+      content: '登录中'
+    });
+    loading.present();
     if(this.username.length == 0) {
       this.showAlert('提示', '请输入账号！');
     }
@@ -68,10 +83,17 @@ export class LoginPage {
       // console.log('加密后数据（16进制）:' + hex64.toHex(encrypted));
       this.cipherText = hex64.toHex(encrypted);
 
+      //记住账号
+      this.storage.set('username',this.username);
       if(this.isRemember) {
         // 记住密码 写入本地
+        this.storage.set('password',this.password);
       }
-
+      // 清空本地账户存储
+      else {
+        this.storage.remove('password');
+      }
+      // 发送登录请求
       const posturl = 'https://qr.micsoto.com/api/getsecuretoken';
       const httpOptions = {
         headers: new HttpHeaders({
@@ -88,11 +110,12 @@ export class LoginPage {
         .subscribe(data => {
             // 更新userToken
             this.userInfo.setUserToken(data.token_type + ' ' + data.access_token);
+            loading.dismiss();
             this.app.getRootNav().setRoot(HomePage);
           },
           error1 => {
+            loading.dismiss();
             this.showAlert('登录失败', '用户名或密码错误，请重试！');
-            this.app.getRootNav().setRoot(HomePage);
           }
         );
     }
