@@ -26,7 +26,7 @@ import {StockPage} from "../pages/stock/stock";
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    HttpClientModule,
+    HttpClientModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -43,7 +43,7 @@ import {StockPage} from "../pages/stock/stock";
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     QRScanner,
     HttpClient,
-    UserInfoProvider
+    UserInfoProvider,
   ]
 })
 export class AppModule {}

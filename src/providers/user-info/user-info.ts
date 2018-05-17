@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 export class UserInfoProvider {
   private userToken: string;
 
+
   constructor() {
     console.log('Hello UserInfoProvider Provider');
   }

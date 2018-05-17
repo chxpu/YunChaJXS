@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Keyboard, LoadingController, NavController, NavParams} from 'ionic-angular';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
+import "rxjs/add/operator/map";
 
 @Component({
   selector: 'page-information',
@@ -36,35 +37,65 @@ export class InformationPage {
   }
 
   add(){
-    alert(this.token+'\n'+this.ProductInfo.qrCode+'\n'+this.ProductInfo.stockPrice.toString()+'\n'+this.ProductInfo.retailPrice.toString());
+    let loading = this.loadingCtrl.create({
+      spinner: 'dots',
+      content: '入库中'
+    });
+    loading.present();
     //上传数据
-    let addParams = new HttpParams();
-    addParams.append('QRCode', this.ProductInfo.qrCode);
-    addParams.append('StockPrice', this.ProductInfo.stockPrice.toString());
-    addParams.append('RetailPrice', this.ProductInfo.retailPrice.toString());
+    let addUrl = 'https://qr.micsoto.com/api/dealer/StockIn?QRCode=';
+    addUrl += this.ProductInfo.qrCode;
+    addUrl += '&StockPrice=';
+    addUrl += this.ProductInfo.stockPrice.toString();
+    addUrl += '&RetailPrice=';
+    addUrl += this.ProductInfo.retailPrice.toString();
     const addHttpOptions = {
       headers: new HttpHeaders({
         'Authorization': this.token
       }),
-      params: addParams
     };
-    this.http.get<any>('https://qr.micsoto.com/api/Dealer/BatchSpecification', addHttpOptions)
+    this.http.post<any>(addUrl,null, addHttpOptions)
       .subscribe(data => {
-        alert(data.msg);
+          loading.dismiss();
+          // 成功
+          this.navCtrl.pop();
+          alert('ok:'+data.msg);
         },
         error1 => {
-          alert('错误：' + error1)
-        }
-      );
-    //返回主页
-    this.navCtrl.pop();
+          loading.dismiss();
+          alert('error1:'+error1);
+        });
   }
-  remove() {
-    //上传数据
 
-    //返回主页
-    this.navCtrl.pop();
+  remove() {
+    let loading = this.loadingCtrl.create({
+      spinner: 'dots',
+      content: '出库中'
+    });
+    loading.present();
+    //上传数据
+    let removeUrl = 'https://qr.micsoto.com//api/dealer/stockout?qrcode=';
+    removeUrl += this.ProductInfo.qrCode;
+    // alert(removeUrl + '\n' + this.token);
+    const removeHttpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': this.token
+      }),
+    };
+    this.http.post<any>(removeUrl,null, removeHttpOptions)
+      .subscribe(data => {
+          loading.dismiss();
+          this.navCtrl.pop();
+          alert('ok:'+data.msg);
+        },
+        error1 => {
+          loading.dismiss();
+          alert('error1:'+ error1);
+        });
+
   }
+
+
   ionViewDidLoad() {
     let loading = this.loadingCtrl.create({
       spinner: 'dots',

@@ -5,7 +5,11 @@
 </ion-header>
 
 <ion-content padding>
-  <button ion-button (click)="addProduct()" color="secondary" full icon-left>
+  <p text-center class="content-name">
+    {{dealerName}}
+  </p>
+
+  <button ion-button (click)="addProduct()" *ngIf="role==4" color="secondary" full icon-left>
     <ion-icon name="md-add"></ion-icon>
     入库
   </button>

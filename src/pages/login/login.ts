@@ -27,7 +27,7 @@ export class LoginPage {
 
   ionViewDidLoad() {
     this.username ='dlz-A';
-    this.password = '';
+    this.password = '123456';
     this.eyeShow = false;
     this.isRemember = false;
   }
@@ -92,6 +92,7 @@ export class LoginPage {
           },
           error1 => {
             this.showAlert('登录失败', '用户名或密码错误，请重试！');
+            this.app.getRootNav().setRoot(HomePage);
           }
         );
     }
