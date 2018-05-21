@@ -15,6 +15,7 @@ import { UserInfoProvider } from '../providers/user-info/user-info';
 import {StockPage} from "../pages/stock/stock";
 import {IonicStorageModule} from "@ionic/storage";
 import {BackButtonService} from "../providers/back-button/backButton.service";
+import {ScreenOrientation} from "@ionic-native/screen-orientation";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {BackButtonService} from "../providers/back-button/backButton.service";
     HttpClient,
     UserInfoProvider,
     Storage,
-    BackButtonService
+    BackButtonService,
+    ScreenOrientation
   ]
 })
 export class AppModule {}

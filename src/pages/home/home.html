@@ -9,17 +9,21 @@
     {{dealerName}}
   </p>
 
-  <button ion-button (click)="addProduct()" *ngIf="role==4" color="secondary" full icon-left>
+  <button ion-button (click)="addProduct()" *ngIf="role==4" full icon-left>
     <ion-icon name="md-add"></ion-icon>
     入库
   </button>
-  <button ion-button (click)="removeProduct()" color="danger" full icon-left>
+  <button ion-button (click)="removeProduct()" full icon-left>
     <ion-icon name="md-close"></ion-icon>
     出库
   </button>
   <button ion-button (click)="showProduct()" full icon-left>
     <ion-icon name="md-clipboard"></ion-icon>
     查看库存
+  </button>
+  <button ion-button (click)="logOut()" full icon-left>
+    <ion-icon name="md-contact"></ion-icon>
+    退出登录
   </button>
 
 </ion-content>

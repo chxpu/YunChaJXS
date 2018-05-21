@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import {NavController, Platform} from 'ionic-angular';
+import {App, NavController, Platform} from 'ionic-angular';
 import {ScanPage} from "../scan/scan";
 import {StockPage} from "../stock/stock";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {BackButtonService} from "../../providers/back-button/backButton.service";
+import {LoginPage} from "../login/login";
+import {Storage} from "@ionic/storage";
 
 
 @Component({
@@ -19,7 +21,9 @@ export class HomePage {
               private userInfo:UserInfoProvider,
               public http: HttpClient,
               private backButtonService: BackButtonService,
-              private platform: Platform) {
+              private platform: Platform,
+              private app: App,
+              private storage: Storage,) {
     this.platform.ready().then(() => {
       this.backButtonService.registerBackButtonAction(null);
     });
@@ -73,5 +77,11 @@ export class HomePage {
       );
   }
 
-
+  /**
+   * 退出登录，返回登录页
+   */
+  logOut() {
+    this.app.getRootNav().setRoot(LoginPage);
+    this.storage.set('autoComplete', false);
+  }
 }

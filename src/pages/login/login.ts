@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AlertController, App, IonicPage, LoadingController, Platform} from 'ionic-angular';
+import {AlertController, App, IonicPage, LoadingController, Platform, ToastController} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {JSEncrypt} from "jsencrypt"
 import hex64 from 'hex64'
@@ -7,7 +7,7 @@ import {HomePage} from "../home/home";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
 import { Storage } from '@ionic/storage'
 import {BackButtonService} from "../../providers/back-button/backButton.service";
-
+import { ScreenOrientation } from '@ionic-native/screen-orientation';
 
 @IonicPage()
 @Component({
@@ -16,11 +16,11 @@ import {BackButtonService} from "../../providers/back-button/backButton.service"
 })
 
 export class LoginPage {
-  private username: string = '';
-  private password: string = '';
+  public username: string = '';
+  public password: string = '';
   private cipherText: string = '';
   private eyeShow: boolean;
-  private isRemember: boolean;
+  public isRemember: boolean;
 
   constructor(private http: HttpClient,
               private app: App,
@@ -29,38 +29,37 @@ export class LoginPage {
               private storage: Storage,
               private loadingCtrl: LoadingController,
               private backButtonService: BackButtonService,
-              private platform: Platform) {
+              private platform: Platform,
+              private screenOrientation: ScreenOrientation,
+              private toastCtrl: ToastController) {
     // 注册返回键服务
     this.platform.ready().then(() => {
       this.backButtonService.registerBackButtonAction(null);
     });
     // 获取本地存储的记住用户名密码
     this.storage.get('username').then((val) => {
-      this.username = val;
+      if(val != null) {
+        this.username = val;
+      }
     });
     this.storage.get('password').then((val) => {
-      this.password = val;
+      if(val != null) {
+        this.password = val;
+      }
     });
     this.eyeShow = false;
     this.isRemember = true;
   }
 
   ionViewDidLoad() {
-
-  }
-
-  /**
-   * 封装alert
-   * @param {string} titleParam
-   * @param {string} subTitleParam
-   */
-  showAlert(titleParam: string, subTitleParam: string) {
-    let alert = this.alertCtrl.create({
-      title: titleParam,
-      subTitle: subTitleParam,
-      buttons: ['OK']
+    // 紧张屏幕旋转
+    this.screenOrientation.lock('portrait');
+    // 自动登录
+    this.storage.get('autoComplete').then((val) => {
+      if(val == true) {
+        this.logIn();
+      }
     });
-    alert.present();
   }
 
   logIn() {
@@ -70,13 +69,25 @@ export class LoginPage {
       content: '登录中'
     });
     loading.present();
+    if(this.isRemember) {
+      // 记住账号密码 写入本地
+      this.storage.set('username',this.username);
+      this.storage.set('password',this.password);
+    }
+    else {
+      // 清空本地账户存储
+      this.storage.remove('username');
+      this.storage.remove('password');
+    }
+
+    // 判断数据合法性
     if(this.username.length == 0) {
       loading.dismiss();
-      this.showAlert('提示', '请输入账号！');
+      this.showToast('请输入账号!', 2000, 'bottom','');
     }
     else if(this.password.length == 0) {
       loading.dismiss();
-      this.showAlert('提示', '请输入密码！');
+      this.showToast('请输入密码!', 2000, 'bottom','');
     }
     else {
       // 公钥加密
@@ -93,16 +104,6 @@ export class LoginPage {
       // console.log('加密后数据（16进制）:' + hex64.toHex(encrypted));
       this.cipherText = hex64.toHex(encrypted);
 
-      //记住账号
-      this.storage.set('username',this.username);
-      if(this.isRemember) {
-        // 记住密码 写入本地
-        this.storage.set('password',this.password);
-      }
-      // 清空本地账户存储
-      else {
-        this.storage.remove('password');
-      }
       // 发送登录请求
       const posturl = 'https://qr.micsoto.com/api/getsecuretoken';
       const httpOptions = {
@@ -122,13 +123,31 @@ export class LoginPage {
             this.userInfo.setUserToken(data.token_type + ' ' + data.access_token);
             loading.dismiss();
             this.app.getRootNav().setRoot(HomePage);
+            this.storage.set('autoComplete', true);
           },
           error1 => {
             loading.dismiss();
-            this.showAlert('登录失败', '用户名或密码错误，请重试！');
+            this.showToast('用户名或密码错误，请重试！', 2000,'bottom','');
           }
         );
     }
+  }
+
+
+  /**
+   * 封装showToast
+   * @param {string} messageParam,
+   * @param {number} durationParam
+   * @param {string} positionParam
+   */
+  showToast(messageParam:string, durationParam:number, positionParam:string, cssClassParam:string) {
+    let toast = this.toastCtrl.create({
+      message: messageParam,
+      duration: durationParam,
+      position:positionParam,
+      cssClass: cssClassParam
+    });
+    toast.present();
   }
 
 }
