@@ -48,7 +48,9 @@ export class LoginPage {
       }
     });
     this.eyeShow = false;
-    this.isRemember = true;
+    this.storage.get('isRemember').then((val) =>
+      this.isRemember = val
+    );
   }
 
   ionViewDidLoad() {
@@ -56,7 +58,7 @@ export class LoginPage {
     this.screenOrientation.lock('portrait');
     // 自动登录
     this.storage.get('autoComplete').then((val) => {
-      if(val == true) {
+      if(val == true && this.username!="" && this.password!="") {
         this.logIn();
       }
     });
@@ -73,13 +75,14 @@ export class LoginPage {
       // 记住账号密码 写入本地
       this.storage.set('username',this.username);
       this.storage.set('password',this.password);
+      this.storage.set('isRemember', true);
     }
     else {
       // 清空本地账户存储
       this.storage.remove('username');
       this.storage.remove('password');
+      this.storage.set('isRemember', false);
     }
-
     // 判断数据合法性
     if(this.username.length == 0) {
       loading.dismiss();
@@ -105,7 +108,7 @@ export class LoginPage {
       this.cipherText = hex64.toHex(encrypted);
 
       // 发送登录请求
-      const posturl = 'https://qr.micsoto.com/api/getsecuretoken';
+      const postUrl = 'https://qr.micsoto.com/api/getsecuretoken';
       const httpOptions = {
         headers: new HttpHeaders({
           'content-type': 'application/x-www-form-urlencoded'
@@ -117,7 +120,7 @@ export class LoginPage {
       postBody.set('grant_type', 'password');
       postBody.set('client_id', '2');
       postBody.set('client_secret', '1');
-      this.http.post<any>(posturl,postBody.toString(), httpOptions)
+      this.http.post<any>(postUrl,postBody.toString(), httpOptions)
         .subscribe(data => {
             // 更新userToken
             this.userInfo.setUserToken(data.token_type + ' ' + data.access_token);
@@ -132,7 +135,6 @@ export class LoginPage {
         );
     }
   }
-
 
   /**
    * 封装showToast
@@ -149,5 +151,4 @@ export class LoginPage {
     });
     toast.present();
   }
-
 }

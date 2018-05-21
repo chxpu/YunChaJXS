@@ -7,8 +7,13 @@
 <ion-content padding>
   <ion-title >库存剩余</ion-title>
   <ion-list inset no-lines class="content-list">
-    <ion-item *ngFor="let item of items" class="content-list-item">
-      {{item.productName}}: {{item.count}} 份
-    </ion-item>
+    <div class="content-list-item" *ngFor="let item of items">
+      <p class="content-list-item-title">{{item.productName}}: </p>
+      <div class="content-list-item-infor">
+        <b class="content-list-item-infor-num">{{item.count}} </b>
+        <b class="content-list-item-infor-title">份</b>
+      </div>
+    </div>
+
   </ion-list>
 </ion-content>

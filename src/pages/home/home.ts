@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {App, NavController, Platform} from 'ionic-angular';
+import {AlertController, App, NavController, Platform} from 'ionic-angular';
 import {ScanPage} from "../scan/scan";
 import {StockPage} from "../stock/stock";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
@@ -23,7 +23,8 @@ export class HomePage {
               private backButtonService: BackButtonService,
               private platform: Platform,
               private app: App,
-              private storage: Storage,) {
+              private storage: Storage,
+              public alertCtrl: AlertController) {
     this.platform.ready().then(() => {
       this.backButtonService.registerBackButtonAction(null);
     });
@@ -81,7 +82,23 @@ export class HomePage {
    * 退出登录，返回登录页
    */
   logOut() {
-    this.app.getRootNav().setRoot(LoginPage);
-    this.storage.set('autoComplete', false);
+    let confirm = this.alertCtrl.create({
+      title: '是否退出登录?',
+      message: '',
+      buttons: [
+        {
+          text: '取消',
+          handler: () => {}
+        },
+        {
+          text: '确定',
+          handler: () => {
+            this.app.getRootNav().setRoot(LoginPage);
+            this.storage.set('autoComplete', false);
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 }

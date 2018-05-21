@@ -1,49 +1,52 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{typeStock==1?"入库":"出库"}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
 <ion-content padding>
-<!--产品信息-->
+  <!--产品信息-->
   <ion-card class="card">
     <ion-card-content class="card-content">
       <ion-list class="card-content-list" no-lines="" text-center="">
         <ion-title class="card-content-list-title">{{ProductInfo.productName}}</ion-title>
-        <ion-row class="card-content-list-item">
-          <b>编号：</b>
-          <ion-col class="card-content-list-item-col">{{ProductInfo.qrCode}}</ion-col>
-        </ion-row>
-        <ion-row class="card-content-list-item">
-          <b>包提规格：</b>
-          <ion-col class="card-content-list-item-col">每提{{ProductInfo.productSpecification}}饼</ion-col>
-        </ion-row>
-        <ion-row class="card-content-list-item">
-          <b>包箱规格：</b>
-          <ion-col class="card-content-list-item-col">每箱{{ProductInfo.promoteSpecification}}提</ion-col>
-        </ion-row>
-        <ion-row class="card-content-list-item">
-          <b>共计：</b>
-          <ion-col class="card-content-list-item-col">{{ProductInfo.totalCount}}饼</ion-col>
-        </ion-row>
+        <div class="card-content-list-item">
+          <p class="card-content-list-item-col-title">编号：</p>
+          <b class="card-content-list-item-col-infor">{{ProductInfo.qrCode}}</b>
+        </div>
+        <div class="card-content-list-item">
+          <p class="card-content-list-item-col-title">包提规格：</p>
+          <b class="card-content-list-item-col-infor">每提{{ProductInfo.productSpecification}}饼</b>
+        </div>
+        <div class="card-content-list-item">
+          <p class="card-content-list-item-col-title">包箱规格：</p>
+          <b class="card-content-list-item-col-infor">每箱{{ProductInfo.promoteSpecification}}提</b>
+        </div>
+        <div class="card-content-list-item">
+          <p class="card-content-list-item-col-title">共计：</p>
+          <b class="card-content-list-item-col-infor">{{ProductInfo.totalCount}}饼</b>
+        </div>
       </ion-list>
     </ion-card-content>
   </ion-card>
   <!--入库选项-->
   <div *ngIf="typeStock == 1">
-    <div class="price" *ngIf="!ProductInfo.isSet">
-      进货价：
-      <a href="#addPrice1" id="addPrice1">
-        <input type="text" class="price-input" >
-      </a>
+    <div class="price" *ngIf="ProductInfo.isSet == false">
+      <b>进货价：</b>
+      <ion-input type="text" class="price-input" [(ngModel)]="ProductInfo.stockPrice"></ion-input>
     </div>
-    <div class="price" *ngIf="!ProductInfo.isSet">
-      零售价：
-      <input type="text" class="price-input">
+    <div class="price" *ngIf="ProductInfo.isSet == false">
+      <b>零售价：</b>
+      <ion-input type="text" class="price-input" [(ngModel)]="ProductInfo.retailPrice"></ion-input>
     </div>
     <div class="fBtn" text-center>
       <button ion-button color="light" (click)="add()">确认入库</button>
     </div>
   </div>
-<!--出库选项-->
-  <div *ngIf="typeStock == 2">
+  <!--出库选项-->
+  <div *ngIf="typeStock == 2" >
     <div class="fBtn" text-center>
       <button ion-button color="light" (click)="remove()">确认出库</button>
     </div>
   </div>
-
 </ion-content>

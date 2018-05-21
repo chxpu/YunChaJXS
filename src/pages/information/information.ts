@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
-import {Keyboard, LoadingController, NavController, NavParams} from 'ionic-angular';
+import {LoadingController, NavController, NavParams,ToastController,} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {UserInfoProvider} from "../../providers/user-info/user-info";
 import "rxjs/add/operator/map";
+
 
 @Component({
   selector: 'page-information',
@@ -15,8 +16,8 @@ export class InformationPage {
     productSpecification: "",
     promoteSpecification: "",
     totalCount: "",
-    stockPrice: 0,
-    retailPrice: 0,
+    stockPrice: "",
+    retailPrice: "",
     isSet: false
   };
   // 入库1 出库2
@@ -25,15 +26,22 @@ export class InformationPage {
 
   constructor(public navCtrl: NavController,
               public loadingCtrl: LoadingController,
-              public keyboard: Keyboard,
               public navParams: NavParams,
               public http: HttpClient,
-              private userInfo:UserInfoProvider) {
+              private userInfo:UserInfoProvider,
+              private toastCtrl: ToastController
+              ) {
     // 获取扫码的茶饼的信息
     this.ProductInfo= navParams.get('ProductInfo');
     // 获取出库入库操作类型
     this.typeStock = navParams.get('typeStock');
     this.token = userInfo.getUserToken();
+    if (this.ProductInfo.stockPrice == "0" ) {
+      this.ProductInfo.stockPrice = ''
+    }
+    if (this.ProductInfo.retailPrice == "0" ) {
+      this.ProductInfo.retailPrice = ''
+    }
   }
 
   add(){
@@ -42,6 +50,10 @@ export class InformationPage {
       content: '入库中'
     });
     loading.present();
+    if(this.ProductInfo.stockPrice == "" || this.ProductInfo.retailPrice == ""){
+      loading.dismiss();
+      this.showToast('价格不能为空',3000,'bottom');
+    }
     //上传数据
     let addUrl = 'https://qr.micsoto.com/api/dealer/StockIn?QRCode=';
     addUrl += this.ProductInfo.qrCode;
@@ -57,13 +69,14 @@ export class InformationPage {
     this.http.post<any>(addUrl,null, addHttpOptions)
       .subscribe(data => {
           loading.dismiss();
-          // 成功
-          this.navCtrl.pop();
-          alert('ok:'+data.msg);
+          this.showToast(data.msg,3000,'bottom');
+          if (data.msg == "入库成功") {
+            this.navCtrl.pop();
+          }
         },
         error1 => {
           loading.dismiss();
-          alert('error1:'+error1);
+          this.showToast(error1,3000,'bottom');
         });
   }
 
@@ -85,12 +98,14 @@ export class InformationPage {
     this.http.post<any>(removeUrl,null, removeHttpOptions)
       .subscribe(data => {
           loading.dismiss();
-          this.navCtrl.pop();
-          alert('ok:'+data.msg);
+          this.showToast(data.msg,3000,'bottom');
+          if (data.outCount != 0) {
+            this.navCtrl.pop();
+          }
         },
         error1 => {
           loading.dismiss();
-          alert('error1:'+ error1);
+          this.showToast(error1,3000,'bottom');
         });
 
   }
@@ -104,6 +119,21 @@ export class InformationPage {
     if(this.typeStock){
       loading.dismiss();
     }
+  }
+
+  /**
+   * 封装showToast
+   * @param {string} messageParam,
+   * @param {number} durationParam
+   * @param {string} positionParam
+   */
+  showToast(messageParam:string, durationParam:number, positionParam:string) {
+    let toast = this.toastCtrl.create({
+      message: messageParam,
+      duration: durationParam,
+      position:positionParam
+    });
+    toast.present();
   }
 
 }
