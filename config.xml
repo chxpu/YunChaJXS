@@ -2,7 +2,7 @@
 <widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>云茶追溯D端</name>
     <description>云茶追溯系统经销商库存管理客户端</description>
-    <author email="hi@ionicframework" href="https://github.com/">大梁造物联网公司</author>
+    <author email="hi@ionicframework" href="http://www.micsoto.com/">大梁造物联网公司</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

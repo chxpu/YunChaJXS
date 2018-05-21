@@ -83,8 +83,7 @@ export class HomePage {
    */
   logOut() {
     let confirm = this.alertCtrl.create({
-      title: '是否退出登录?',
-      message: '',
+      message: '是否退出登录?',
       buttons: [
         {
           text: '取消',
@@ -97,7 +96,7 @@ export class HomePage {
             this.storage.set('autoComplete', false);
           }
         }
-      ]
+      ],
     });
     confirm.present();
   }
