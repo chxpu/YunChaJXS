@@ -95,7 +95,6 @@ export class InformationPage {
 
   }
 
-
   ionViewDidLoad() {
     let loading = this.loadingCtrl.create({
       spinner: 'dots',

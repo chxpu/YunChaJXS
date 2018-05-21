@@ -71,9 +71,11 @@ export class LoginPage {
     });
     loading.present();
     if(this.username.length == 0) {
+      loading.dismiss();
       this.showAlert('提示', '请输入账号！');
     }
     else if(this.password.length == 0) {
+      loading.dismiss();
       this.showAlert('提示', '请输入密码！');
     }
     else {
