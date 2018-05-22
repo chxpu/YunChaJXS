@@ -49,7 +49,11 @@ export class ScanPage {
       .then((status: QRScannerStatus) => {
         if (status.authorized) {
           let scanSub = this.qrScanner.scan().subscribe((text: string) => {
-            // alert('二维码内容：' + text);
+            // alert('二维码内容：' + text + '\n是否合格：' + this.checkCode(text));
+            if (!this.checkCode(text)) {
+              this.presentToast('二维码信息错误，请重新扫码', 4000, 'top');
+              this.ionViewDidLoad();
+            }
             // 发送get
             const httpGetOptions = {
               headers: new HttpHeaders({
@@ -85,7 +89,7 @@ export class ScanPage {
           this.qrScanner.show();
 
         } else if (status.denied) {
-          alert('请开启相机权限！');
+          alert('请为此应用开启相机权限！');
         } else {
           // permission was denied, but not permanently. You can ask for permission again at a later time.
         }
@@ -137,13 +141,45 @@ export class ScanPage {
       duration: time,
       position: position
     });
-
     toast.onDidDismiss(() => {
       console.log('Dismissed toast');
     });
-
     toast.present();
   }
+
+  /**
+   * 解析URL参数
+   * @param url
+   * @returns {{}}
+   */
+  parseQueryString(url): any {
+    let obj = {};
+    let start = url.indexOf("?")+1;
+    let str = url.substr(start);
+    let arr = str.split("&");
+    for(let i = 0 ;i < arr.length;i++){
+      let arr2 = arr[i].split("=");
+      obj[arr2[0]] = arr2[1];
+    }
+    return obj;
+  }
+
+  /**
+   *
+   * @param codeText 检查扫码结果 格式是否正确
+   * @returns {boolean} 返回true合格
+   */
+  checkCode(codeText) {
+    if (codeText.toString().length != 26) {
+      codeText = this.parseQueryString(codeText).cakeCode;
+    }
+    if (!isNaN(codeText) && codeText.toString().length == 26) {
+      return true
+    }
+    return false;
+  }
+
+
 
 }
 

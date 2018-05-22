@@ -70,7 +70,6 @@ export class LoginPage {
       spinner: 'dots',
       content: '登录中'
     });
-    loading.present();
     if(this.isRemember) {
       // 记住账号密码 写入本地
       this.storage.set('username',this.username);
@@ -85,14 +84,13 @@ export class LoginPage {
     }
     // 判断数据合法性
     if(this.username.length == 0) {
-      loading.dismiss();
       this.showToast('请输入账号!', 2000, 'bottom','');
     }
     else if(this.password.length == 0) {
-      loading.dismiss();
       this.showToast('请输入密码!', 2000, 'bottom','');
     }
     else {
+      loading.present();
       // 公钥加密
       let encrypt = new JSEncrypt();
       encrypt.setPublicKey('-----BEGIN PUBLIC KEY-----\n' +
