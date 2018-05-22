@@ -50,7 +50,8 @@ export class ScanPage {
         if (status.authorized) {
           let scanSub = this.qrScanner.scan().subscribe((text: string) => {
             // alert('二维码内容：' + text + '\n是否合格：' + this.checkCode(text));
-            if (!this.checkCode(text)) {
+            text = this.checkCode(text);
+            if (text == 'false') {
               this.presentToast('二维码信息错误，请重新扫码', 4000, 'top');
               this.ionViewDidLoad();
             }
@@ -71,7 +72,6 @@ export class ScanPage {
                 this.ProductInfo.stockPrice = data.specification.stockPrice;
                 this.ProductInfo.retailPrice = data.specification.retailPrice;
                 this.ProductInfo.isSet = data.specification.isSet;
-
                 this.navCtrl.pop();
                 this.navCtrl.push(InformationPage, {
                   ProductInfo: this.ProductInfo,
@@ -79,7 +79,7 @@ export class ScanPage {
                 });
               },
                 error1 => {
-                  alert('错误：' + error1)
+                  console.log('错误：' + error1)
                 }
               );
             // this.qrScanner.hide(); // hide camera preview
@@ -167,18 +167,17 @@ export class ScanPage {
   /**
    *
    * @param codeText 检查扫码结果 格式是否正确
-   * @returns {boolean} 返回true合格
+   * @returns {boolean} 返回FALSE不合格，返回code合格
    */
   checkCode(codeText) {
     if (codeText.toString().length != 26) {
       codeText = this.parseQueryString(codeText).cakeCode;
     }
     if (!isNaN(codeText) && codeText.toString().length == 26) {
-      return true
+      return codeText
     }
-    return false;
+    return 'false';
   }
-
 
 
 }
