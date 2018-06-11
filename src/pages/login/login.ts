@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AlertController, App, IonicPage, LoadingController, Platform, ToastController} from 'ionic-angular';
+import { App, IonicPage, LoadingController, Platform, ToastController} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {JSEncrypt} from "jsencrypt"
 import hex64 from 'hex64'
@@ -25,7 +25,6 @@ export class LoginPage {
   constructor(private http: HttpClient,
               private app: App,
               private userInfo:UserInfoProvider,
-              private alertCtrl: AlertController,
               private storage: Storage,
               private loadingCtrl: LoadingController,
               private backButtonService: BackButtonService,
